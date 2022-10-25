@@ -11,7 +11,7 @@ class NamaSpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         item = TuranggaItem()
-        item['title'] = [re.sub("\d+\.\s*", "", v).replace(u'\xa0', '') for v in
+        item['title'] = [re.sub(r'\d+\.\s*', "", v).replace(u'\xa0', '') for v in
                          response.xpath('//strong/text()').extract()
                          if v != "Artikel terkait:"][:-4]
         item['detail'] = response.xpath('//p/text()')[4:-19].extract()
