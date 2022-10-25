@@ -1,3 +1,4 @@
+import re
 import scrapy
 
 from turangga.items import TuranggaItem
@@ -10,6 +11,8 @@ class NamaSpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         item = TuranggaItem()
-        item['title'] = [v for v in response.xpath('//strong/text()') if v.get() != "Artikel terkait:"][:-4]
-        item['detail'] = response.xpath('//p/text()')[4:-19]
+        item['title'] = [re.sub("\d+\.\s*", "", v).replace(u'\xa0', '') for v in
+                         response.xpath('//strong/text()').extract()
+                         if v != "Artikel terkait:"][:-4]
+        item['detail'] = response.xpath('//p/text()')[4:-19].extract()
         yield item
